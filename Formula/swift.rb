@@ -1,8 +1,8 @@
 class Swift < Formula
   desc "High-performance system programming language"
   homepage "https://github.com/apple/swift"
-  url "https://github.com/apple/swift/archive/swift-4.2.1-RELEASE.tar.gz"
-  sha256 "1e26cf541f7b10b96344fb1c4500ec52ced525cdf7b6bb77425c768cef0b2c5b"
+  url "https://github.com/apple/swift/archive/swift-5.1.2-RELEASE.tar.gz"
+  sha256 "1a366fd001df4f6d0da61361f3574ca01a63f3f551b2ccc21939aa570b61b59e"
 
   bottle do
     cellar :any
@@ -18,39 +18,29 @@ class Swift < Formula
 
   # Depends on latest version of Xcode
   # https://github.com/apple/swift#system-requirements
-  depends_on :xcode => ["10.0", :build]
+  depends_on :xcode => ["11.0", :build]
 
   # This formula is expected to have broken/missing linkage to
   # both UIKit.framework and AssetsLibrary.framework. This is
   # simply due to the nature of Swift's SDK Overlays.
-  resource "clang" do
-    url "https://github.com/apple/swift-clang/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "cbf22fe2da2e2a19010f6e109ab3f80a8af811d9416c29d031362c02a0e69a66"
+  resource "llvm-project" do
+    url "https://github.com/apple/llvm-project/archive/swift-5.1.2-RELEASE.tar.gz"
+    sha256 "d045b1d42933f4d34b24f5434438bbdce4a18341964be019ff5d3f0ed56653fe"
   end
 
   resource "cmark" do
-    url "https://github.com/apple/swift-cmark/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "0e9f097c26703693a5543667716c2cac7a8847806e850db740ae9f90eaf93793"
-  end
-
-  resource "compiler-rt" do
-    url "https://github.com/apple/swift-compiler-rt/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "6b14737d2d57f3287a5c2d80d8d8ae917d8f7bbe4d78cc6d66a80e68d55cd00f"
+    url "https://github.com/apple/swift-cmark/archive/swift-5.1.2-RELEASE.tar.gz"
+    sha256 "2d0919a443536161ac7e059ac3922b70f63c3e46a26efc4b5f8ac824caf09d2e"
   end
 
   resource "llbuild" do
-    url "https://github.com/apple/swift-llbuild/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "07a02b4314050a66fad460b76379988d794dac1452a56fcf5073d318458fed6e"
-  end
-
-  resource "llvm" do
-    url "https://github.com/apple/swift-llvm/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "bcd85a91824dd166fe852ddb7e58c509f52316011c3079010ad59b017a61ad14"
+    url "https://github.com/apple/swift-llbuild/archive/swift-5.1.2-RELEASE.tar.gz"
+    sha256 "61629212db265d849db5fa2b2b770385713938a38fdfb3bb7cff120a748f946a"
   end
 
   resource "swiftpm" do
-    url "https://github.com/apple/swift-package-manager/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "e1a50dc3d264bdb8d0447c264e8c164403e84b0831ffd53d87f15a742bda7fa9"
+    url "https://github.com/apple/swift-package-manager/archive/swift-5.1.2-RELEASE.tar.gz"
+    sha256 "74e61207f4d0ac67fe5bc69d16591df1bc29cbcaeb0ccfdf480d43bfc5c5608a"
   end
 
   def install
@@ -62,6 +52,9 @@ class Swift < Formula
 
     ln_sf buildpath, "#{workspace}/swift"
     resources.each { |r| r.stage("#{workspace}/#{r.name}") }
+    %w[clang llvm lldb compiler-rt libcxx clang-tools-extra].each { |p|
+      ln_sf workspace/"llvm-project"/p, workspace/p
+    }
 
     mkdir build do
       # List of components to build
@@ -73,14 +66,18 @@ class Swift < Formula
         swift-remote-mirror-headers
       ]
 
+      # SwiftPM _requires_ CC to be either absolute or unset
+      ENV["CC"] = which ENV.cc
+
       system "#{workspace}/swift/utils/build-script",
         "--release", "--assertions",
         "--no-swift-stdlib-assertions",
         "--build-subdir=#{build}",
         "--llbuild", "--swiftpm",
+        "--jobs=#{ENV.make_jobs}",
+        "--verbose-build",
         "--",
         "--workspace=#{workspace}",
-        "--build-args=-j#{ENV.make_jobs}",
         "--install-destdir=#{prefix}",
         "--toolchain-prefix=#{toolchain_prefix}",
         "--install-prefix=#{install_prefix}",
