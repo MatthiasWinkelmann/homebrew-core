@@ -1,8 +1,8 @@
 class FluidSynth < Formula
   desc "Real-time software synthesizer based on the SoundFont 2 specs"
   homepage "http://www.fluidsynth.org"
-  url "https://github.com/FluidSynth/fluidsynth/archive/v2.0.8.tar.gz"
-  sha256 "0c37e72db31d1b35e587b94b7163d68444cffaa9e7fe8a293d79957620bff117"
+  url "https://github.com/FluidSynth/fluidsynth/archive/v2.0.9.tar.gz"
+  sha256 "bfe82ccf1bf00ff5cfc18e2d9d1e5d95c6bd169a76a2dec14898d1ee0e0fac8a"
   head "https://github.com/FluidSynth/fluidsynth.git"
 
   bottle do
@@ -18,6 +18,11 @@ class FluidSynth < Formula
   depends_on "libsndfile"
   depends_on "portaudio"
 
+  resource "example_midi" do
+    url "https://upload.wikimedia.org/wikipedia/commons/6/61/Drum_sample.mid"
+    sha256 "a1259360c48adc81f2c5b822f221044595632bd1a76302db1f9d983c44f45a30"
+  end
+
   def install
     args = std_cmake_args + %w[
       -Denable-framework=OFF
@@ -31,9 +36,16 @@ class FluidSynth < Formula
       system "cmake", "..", *args
       system "make", "install"
     end
+
+    pkgshare.install "sf2"
   end
 
   test do
-    assert_match /#{version}/, shell_output("#{bin}/fluidsynth --version")
+    resource("example_midi").stage testpath
+    system bin/"fluidsynth", "-acoreaudio",
+                             "-mcoremidi",
+                             "-i", "-g0",
+                             pkgshare/"sf2/VintageDreamsWaves-v2.sf2",
+                             "Drum_sample.mid"
   end
 end
