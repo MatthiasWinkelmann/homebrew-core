@@ -3,6 +3,7 @@ class Wal2json < Formula
   homepage "https://github.com/eulerto/wal2json"
   url "https://github.com/eulerto/wal2json/archive/wal2json_1_0.tar.gz"
   sha256 "d8c1b774bc2d41747ae4266280f798b26e8e72e8ea46a58b71764edb98cf2ef4"
+  revision 1
 
   bottle do
     cellar :any_skip_relocation
@@ -64,60 +65,60 @@ class Wal2json < Formula
       expected_output = <<~EOS
         init
         {
-		"change": [
-			{
-				"kind": "insert",
-				"schema": "public",
-				"table": "table2_with_pk",
-				"columnnames": ["a", "b", "c"],
-				"columntypes": ["integer", "character varying(30)", "timestamp without time zone"],
-				"columnvalues": [1, "Backup and Restore", "2019-10-08 12:00:00"]
-			}
-			,{
-				"kind": "insert",
-				"schema": "public",
-				"table": "table2_with_pk",
-				"columnnames": ["a", "b", "c"],
-				"columntypes": ["integer", "character varying(30)", "timestamp without time zone"],
-				"columnvalues": [2, "Tuning", "2019-10-08 12:00:00"]
-			}
-			,{
-				"kind": "insert",
-				"schema": "public",
-				"table": "table2_with_pk",
-				"columnnames": ["a", "b", "c"],
-				"columntypes": ["integer", "character varying(30)", "timestamp without time zone"],
-				"columnvalues": [3, "Replication", "2019-10-08 12:00:00"]
-			}
-			,{
-				"kind": "delete",
-				"schema": "public",
-				"table": "table2_with_pk",
-				"oldkeys": {
-					"keynames": ["a", "c"],
-					"keytypes": ["integer", "timestamp without time zone"],
-					"keyvalues": [1, "2019-10-08 12:00:00"]
-				}
-			}
-			,{
-				"kind": "delete",
-				"schema": "public",
-				"table": "table2_with_pk",
-				"oldkeys": {
-					"keynames": ["a", "c"],
-					"keytypes": ["integer", "timestamp without time zone"],
-					"keyvalues": [2, "2019-10-08 12:00:00"]
-				}
-			}
-			,{
-				"kind": "insert",
-				"schema": "public",
-				"table": "table2_without_pk",
-				"columnnames": ["a", "b", "c"],
-				"columntypes": ["integer", "numeric(5,2)", "text"],
-				"columnvalues": [1, 2.34, "Tapir"]
-			}
-		]
+        	"change": [
+        		{
+        			"kind": "insert",
+        			"schema": "public",
+        			"table": "table2_with_pk",
+        			"columnnames": ["a", "b", "c"],
+        			"columntypes": ["integer", "character varying(30)", "timestamp without time zone"],
+        			"columnvalues": [1, "Backup and Restore", "2019-10-08 12:00:00"]
+        		}
+        		,{
+        			"kind": "insert",
+        			"schema": "public",
+        			"table": "table2_with_pk",
+        			"columnnames": ["a", "b", "c"],
+        			"columntypes": ["integer", "character varying(30)", "timestamp without time zone"],
+        			"columnvalues": [2, "Tuning", "2019-10-08 12:00:00"]
+        		}
+        		,{
+        			"kind": "insert",
+        			"schema": "public",
+        			"table": "table2_with_pk",
+        			"columnnames": ["a", "b", "c"],
+        			"columntypes": ["integer", "character varying(30)", "timestamp without time zone"],
+        			"columnvalues": [3, "Replication", "2019-10-08 12:00:00"]
+        		}
+        		,{
+        			"kind": "delete",
+        			"schema": "public",
+        			"table": "table2_with_pk",
+        			"oldkeys": {
+        				"keynames": ["a", "c"],
+        				"keytypes": ["integer", "timestamp without time zone"],
+        				"keyvalues": [1, "2019-10-08 12:00:00"]
+        			}
+        		}
+        		,{
+        			"kind": "delete",
+        			"schema": "public",
+        			"table": "table2_with_pk",
+        			"oldkeys": {
+        				"keynames": ["a", "c"],
+        				"keytypes": ["integer", "timestamp without time zone"],
+        				"keyvalues": [2, "2019-10-08 12:00:00"]
+        			}
+        		}
+        		,{
+        			"kind": "insert",
+        			"schema": "public",
+        			"table": "table2_without_pk",
+        			"columnnames": ["a", "b", "c"],
+        			"columntypes": ["integer", "numeric(5,2)", "text"],
+        			"columnvalues": [1, 2.34, "Tapir"]
+        		}
+        	]
         }
         stop
       EOS
