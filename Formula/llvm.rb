@@ -1,7 +1,7 @@
 class Llvm < Formula
   desc "Next-gen compiler infrastructure"
   homepage "https://llvm.org/"
-  revision 1
+  revision 2
 
   stable do
     url "https://releases.llvm.org/9.0.0/llvm-9.0.0.src.tar.xz"
@@ -159,7 +159,7 @@ class Llvm < Formula
 
     mkdir "build" do
       if MacOS.version >= :mojave
-        sdk_path = MacOS::CLT.installed? ? "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" : MacOS.sdk_path
+        sdk_path = MacOS::CLT.installed? ? "/Library/Developer/CommandLineTools/SDKs/MacOSX#{MacOS.version}.sdk" : MacOS.sdk_path
         args << "-DDEFAULT_SYSROOT=#{sdk_path}"
       end
 
@@ -168,6 +168,9 @@ class Llvm < Formula
       system "make", "install"
       system "make", "install-xcode-toolchain"
     end
+
+    # llvm-config requires a versioned dylib
+    lib.install_symlink lib/"libLLVM.dylib" => "libLLVM-#{version.to_s[/\d+/]}.dylib"
 
     (share/"clang/tools").install Dir["tools/clang/tools/scan-{build,view}"]
     (share/"cmake").install "cmake/modules"
@@ -247,7 +250,7 @@ class Llvm < Formula
     # Testing Command Line Tools
     if MacOS::CLT.installed?
       toolchain_path = "/Library/Developer/CommandLineTools"
-      sdk_path = "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+      sdk_path = "/Library/Developer/CommandLineTools/SDKs/MacOSX#{MacOS.version}.sdk"
       system "#{bin}/clang++", "-v",
              "-isysroot", sdk_path,
              "-isystem", "#{toolchain_path}/usr/include/c++/v1",
