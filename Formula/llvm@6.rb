@@ -3,7 +3,7 @@ class LlvmAT6 < Formula
   homepage "https://llvm.org/"
   url "https://releases.llvm.org/6.0.1/llvm-6.0.1.src.tar.xz"
   sha256 "b6d6c324f9c71494c0ccaf3dac1f16236d970002b42bb24a6c9e1634f7d0f4e2"
-  revision 2
+  revision 3
 
   bottle do
     cellar :any
@@ -109,7 +109,7 @@ class LlvmAT6 < Formula
     ]
 
     if MacOS.version >= :mojave
-      sdk_path = MacOS::CLT.installed? ? "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" : MacOS.sdk_path
+      sdk_path = MacOS::CLT.installed? ? "/Library/Developer/CommandLineTools/SDKs/MacOSX#{MacOS.version}.sdk" : MacOS.sdk_path
       args << "-DDEFAULT_SYSROOT=#{sdk_path}"
     end
 
@@ -119,6 +119,9 @@ class LlvmAT6 < Formula
       system "make", "install"
       system "make", "install-xcode-toolchain"
     end
+
+    # llvm-config requires a versioned dylib
+    lib.install_symlink lib/"libLLVM.dylib" => "libLLVM-6.0.dylib"
 
     (share/"cmake").install "cmake/modules"
     (share/"clang/tools").install Dir["tools/clang/tools/scan-{build,view}"]
@@ -205,7 +208,7 @@ class LlvmAT6 < Formula
     # Testing Command Line Tools
     if MacOS::CLT.installed?
       toolchain_path = "/Library/Developer/CommandLineTools"
-      sdk_path = "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+      sdk_path = "/Library/Developer/CommandLineTools/SDKs/MacOSX#{MacOS.version}.sdk"
       system "#{bin}/clang++", "-v",
              "-isysroot", sdk_path,
              "-isystem", "#{toolchain_path}/usr/include/c++/v1",
