@@ -1,9 +1,8 @@
 class Dynare < Formula
   desc "Platform for economic models, particularly DSGE and OLG models"
   homepage "https://www.dynare.org/"
-  url "https://www.dynare.org/release/source/dynare-4.5.7.tar.xz"
-  sha256 "9224ec5279d79d55d91a01ed90022e484f66ce93d56ca6d52933163f538715d4"
-  revision 11
+  url "https://www.dynare.org/release/source/dynare-4.6.1.tar.xz"
+  sha256 "ec4e9e5e06519bb5bec60d273d7878725eb2dd64f4443ca2bb14fe0589f76930"
 
   bottle do
     cellar :any
@@ -13,7 +12,7 @@ class Dynare < Formula
   end
 
   head do
-    url "https://github.com/DynareTeam/dynare.git"
+    url "https://git.dynare.org/Dynare/dynare.git"
 
     depends_on "autoconf" => :build
     depends_on "automake" => :build
@@ -39,7 +38,7 @@ class Dynare < Formula
   end
 
   def install
-    ENV.cxx11
+    ENV["HOMEBREW_CC"] = "gcc-#{Formula["gcc"].version_suffix}"
 
     resource("slicot").stage do
       system "make", "lib", "OPTS=-fPIC", "SLICOTLIB=../libslicot_pic.a",
@@ -48,7 +47,7 @@ class Dynare < Formula
       system "make", "lib", "OPTS=-fPIC -fdefault-integer-8",
              "FORTRAN=gfortran", "LOADER=gfortran",
              "SLICOTLIB=../libslicot64_pic.a"
-      (buildpath/"slicot").install "libslicot_pic.a", "libslicot64_pic.a"
+      (buildpath/"slicot/lib").install "libslicot_pic.a", "libslicot64_pic.a"
     end
 
     system "autoreconf", "-fvi" if build.head?
@@ -57,7 +56,8 @@ class Dynare < Formula
                           "--disable-silent-rules",
                           "--prefix=#{prefix}",
                           "--disable-matlab",
-                          "--with-slicot=#{buildpath}/slicot"
+                          "--with-slicot=#{buildpath}/slicot",
+                          "--disable-doc"
     system "make", "install"
   end
 
