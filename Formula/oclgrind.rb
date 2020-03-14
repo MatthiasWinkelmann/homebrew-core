@@ -3,6 +3,7 @@ class Oclgrind < Formula
   homepage "https://github.com/jrprice/Oclgrind"
   url "https://github.com/jrprice/Oclgrind/archive/v19.10.tar.gz"
   sha256 "f9a8f22cb9f6d88670f2578c46ba0d728ba8eaee5c481c2811129dc157c43dc0"
+  revision 1
 
   bottle do
     cellar :any
@@ -14,6 +15,14 @@ class Oclgrind < Formula
 
   depends_on "cmake" => :build
   depends_on "llvm"
+
+  # Fix hardcoded Cellar paths being referenced.
+  # This in turn fixes segmantation faults after an LLVM revision bump or update.
+  # Remove with the next version of Oclgrind.
+  patch do
+    url "https://github.com/jrprice/Oclgrind/commit/ded0008a2c146add4fb4ad703d299d91ca5603fb.patch?full_index=1"
+    sha256 "044b8509686321b28de1a21a42477abdad234d0b0a716e52feab2dec12033533"
+  end
 
   def install
     system "cmake", ".", *std_cmake_args
