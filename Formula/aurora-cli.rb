@@ -1,8 +1,7 @@
 class AuroraCli < Formula
   desc "Apache Aurora Scheduler Client"
   homepage "https://aurora.apache.org"
-  url "https://www.apache.org/dyn/closer.lua?path=aurora/0.22.0/apache-aurora-0.22.0.tar.gz"
-  mirror "https://archive.apache.org/dist/aurora/0.22.0/apache-aurora-0.22.0.tar.gz"
+  url "https://archive.apache.org/dist/aurora/0.22.0/apache-aurora-0.22.0.tar.gz"
   sha256 "d3c20a09dcc62cac98cb83889099e845ce48a1727ca562d80b9a9274da2cfa12"
 
   bottle do
@@ -12,14 +11,11 @@ class AuroraCli < Formula
     sha256 "0a1b506e5d75c9fa8d587bfc9945e78c9cb5342c17a4062d18aafb942e111eca" => :high_sierra
   end
 
-  depends_on "python"
+  # Uses Python 2. Does not support Python 3.
+  # https://github.com/apache/attic-aurora/issues/68
+  # Apache version has reached EOL.
 
   def install
-    # No pants yet for Mojave, so we force High Sierra binaries there
-    ENV["PANTS_BINARIES_PATH_BY_ID"] =
-      "{('darwin','15'):('mac','10.11'),('darwin','16'):('mac','10.12'),"\
-      "('darwin','17'):('mac','10.13'),('darwin','18'):('mac','10.13')}"
-
     system "./pants", "binary", "src/main/python/apache/aurora/kerberos:kaurora"
     system "./pants", "binary", "src/main/python/apache/aurora/kerberos:kaurora_admin"
     bin.install "dist/kaurora.pex" => "aurora"
