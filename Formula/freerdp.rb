@@ -1,8 +1,8 @@
 class Freerdp < Formula
   desc "X11 implementation of the Remote Desktop Protocol (RDP)"
   homepage "https://www.freerdp.com/"
-  url "https://github.com/FreeRDP/FreeRDP/archive/2.0.0-rc4.tar.gz"
-  sha256 "3406f3bfab63f81c1533029a5bf73949ff60f22f6e155c5a08005b8b8afe6d49"
+  url "https://pub.freerdp.com/releases/freerdp-2.0.0.tar.gz"
+  sha256 "4ee064e87486cb6fea85d5b6b606add9f02df25ce73f9818b49de75cebd7fedf"
 
   bottle do
     sha256 "70925b1a37136343df3c26e9448a292df3bb4fd697e7932810ffd75cea986049" => :catalina
@@ -16,7 +16,10 @@ class Freerdp < Formula
   end
 
   depends_on "cmake" => :build
+  depends_on "docbook-xsl" => :build
   depends_on "pkg-config" => :build
+  depends_on "cairo"
+  depends_on "libusb"
   depends_on "openssl@1.1"
   depends_on :x11
 
