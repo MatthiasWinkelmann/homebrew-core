@@ -5,7 +5,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        version: [10.15, 10.14, 10.13]
+        version: [macOS-latest]
       fail-fast: false
     runs-on: ${{ matrix.version }}
     timeout-minutes: 4320
@@ -16,24 +16,31 @@ jobs:
       HOMEBREW_DEVELOPER: 1
       HOMEBREW_NO_ANALYTICS: 1
       HOMEBREW_NO_AUTO_UPDATE: 1
-      GITHUB_ACTIONS_HOMEBREW_SELF_HOSTED: 1
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     steps:
       - name: Update Homebrew
         run: brew update-reset
       - name: Set up Git repository
         run: |
-          cd $(brew --repo ${{github.repository}})
-          git clean -ffdx
-          git fetch --prune --force origin master
-          git fetch --prune --force origin ${{github.sha}}
-          git checkout --force ${{github.sha}}
-          git log -1
+          HOMEBREW_TAP_DIR="$(brew --repo Homebrew/core)"
+          rm -rf "$HOMEBREW_TAP_DIR"
+          ln -s "$PWD" "$HOMEBREW_TAP_DIR"
+      - name: Get test-bot arguments
+        uses: actions/github-script@0.9.0
+        id: args
+        with:
+          result-encoding: string
+          script: |
+            const labels = await github.issues.listLabelsOnIssue({
+              ...context.repo,
+              issue_number: context.issue.number
+            })
+            return labels.data.filter(l => l.name.startsWith("ci/")).map(l => "--" + l.name.slice(3)).join(" ")
       - name: Run brew test-bot
         run: |
           mkdir bottles
           cd bottles
-          brew test-bot
+          brew test-bot --tap=Homebrew/core ${{ steps.args.outputs.result }}
       - name: Count bottles
         id: bottles
         if: always()
