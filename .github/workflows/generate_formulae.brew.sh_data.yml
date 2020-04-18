@@ -15,8 +15,9 @@ jobs:
           git clone --depth=1 https://github.com/Homebrew/formulae.brew.sh
           cd formulae.brew.sh
 
-          /usr/bin/bundle install --jobs 4 --retry 3
-          /usr/bin/bundle exec rake
+          export PATH="/usr/bin:$PATH"
+          bundle install --jobs 4 --retry 3
+          bundle exec rake
 
           # commit and push generated files
           git add _data/formula api/formula formula
