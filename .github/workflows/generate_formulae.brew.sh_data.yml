@@ -15,7 +15,6 @@ jobs:
           git clone --depth=1 https://github.com/Homebrew/formulae.brew.sh
           cd formulae.brew.sh
 
-          export PATH="/usr/bin:$PATH"
           rake
 
           # commit and push generated files
