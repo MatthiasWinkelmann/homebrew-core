@@ -16,8 +16,7 @@ jobs:
           cd formulae.brew.sh
 
           export PATH="/usr/bin:$PATH"
-          bundle install --jobs 4 --retry 3
-          bundle exec rake
+          rake
 
           # commit and push generated files
           git add _data/formula api/formula formula
