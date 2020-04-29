@@ -1,9 +1,8 @@
 class KnotResolver < Formula
   desc "Minimalistic, caching, DNSSEC-validating DNS resolver"
   homepage "https://www.knot-resolver.cz"
-  url "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.1.tar.xz"
-  sha256 "4a93264ad0cda7ea2252d1ba057e474722f77848165f2893e0c76e21ae406415"
-  revision 1
+  url "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.1.0.tar.xz"
+  sha256 "9ab179d1dccc6ba59aacac81a4cd10a039615c7a846d9f77f26b851da25d1a86"
   head "https://gitlab.labs.nic.cz/knot/knot-resolver.git"
 
   bottle do
@@ -23,17 +22,10 @@ class KnotResolver < Formula
 
   def install
     mkdir "build" do
-      system "meson", "--prefix=#{prefix}", "--default-library=static", ".."
+      system "meson", *std_meson_args, ".."
       system "ninja"
       system "ninja", "install"
     end
-  end
-
-  # DNSSEC root anchor published by IANA (https://www.iana.org/dnssec/files)
-  def root_keys
-    <<~EOS
-      . IN DS 20326 8 2 e06d44b80b8f1d39a95c0b0d7c65d08458e880409bbc683457104237c7f8ec8d
-    EOS
   end
 
   plist_options :startup => true
