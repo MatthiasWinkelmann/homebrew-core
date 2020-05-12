@@ -8,6 +8,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest]
+    env:
+      HOMEBREW_FORCE_HOMEBREW_ON_LINUX: 1
+      HOMEBREW_DEVELOPER: 1
+      HOMEBREW_NO_ANALYTICS: 1
+      HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
     - name: Set up Homebrew
       id: set-up-homebrew
@@ -18,7 +23,7 @@ jobs:
           brew update-reset "$HOMEBREW_REPOSITORY"
 
           HOMEBREW_CORE_REPOSITORY="$HOMEBREW_REPOSITORY/Library/Taps/homebrew/homebrew-core"
-          git -C "$HOMEBREW_CORE_REPOSITORY" remote set-url origin "https://github.com/$GITHUB_REPOSITORY"
+          #git -C "$HOMEBREW_CORE_REPOSITORY" remote set-url origin "https://github.com/$GITHUB_REPOSITORY"
           brew update-reset "$HOMEBREW_CORE_REPOSITORY"
         else
           HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
