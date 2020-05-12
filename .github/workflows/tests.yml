@@ -13,11 +13,13 @@ jobs:
       id: set-up-homebrew
       run: |
         if which brew &>/dev/null; then
-          HOMEBREW_REPOSITORY="$(brew --repo)"
+          HOMEBREW_PREFIX="$(brew --prefix)"
+          HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
           brew update-reset "$HOMEBREW_REPOSITORY"
 
           HOMEBREW_CORE_REPOSITORY="$HOMEBREW_REPOSITORY/Library/Taps/homebrew/homebrew-core"
           git -C "$HOMEBREW_CORE_REPOSITORY" remote set-url origin "https://github.com/$GITHUB_REPOSITORY"
+          brew update-reset "$HOMEBREW_CORE_REPOSITORY"
         else
           HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
           HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
