@@ -43,10 +43,14 @@ jobs:
         echo "::set-output name=gems-hash::$GEMS_HASH"
 
         cd "$HOMEBREW_CORE_REPOSITORY"
+        echo "$GITHUB_WORKSPACE"
         rm -rf "$GITHUB_WORKSPACE"
         ln -s "$HOMEBREW_CORE_REPOSITORY" "$GITHUB_WORKSPACE"
+        git clean -ffdx
         git fetch --prune --force origin "${{github.sha}}"
+        echo "fetched"
         git checkout --force -B master FETCH_HEAD
+        echo "co"
         cd -
 
         if [ "$RUNNER_OS" = "Linux" ]; then
