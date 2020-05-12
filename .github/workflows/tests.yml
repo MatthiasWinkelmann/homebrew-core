@@ -1,7 +1,6 @@
 name: GitHub Actions CI
 on:
   push:
-    branches: master
   pull_request: []
 jobs:
   tap_syntax:
@@ -18,7 +17,6 @@ jobs:
           brew update-reset "$HOMEBREW_REPOSITORY"
 
           HOMEBREW_CORE_REPOSITORY="$HOMEBREW_REPOSITORY/Library/Taps/homebrew/homebrew-core"
-          ln -s "$PWD" "$HOMEBREW_CORE_REPOSITORY"
         else
           HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
           HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
