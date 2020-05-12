@@ -45,7 +45,7 @@ jobs:
         cd "$HOMEBREW_CORE_REPOSITORY"
         rm -rf "$GITHUB_WORKSPACE"
         ln -s "$HOMEBREW_CORE_REPOSITORY" "$GITHUB_WORKSPACE"
-        git fetch origin "${{github.sha}}"
+        git fetch --prune --force origin "${{github.sha}}"
         git checkout --force -B master FETCH_HEAD
         cd -
 
