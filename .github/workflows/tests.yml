@@ -44,6 +44,11 @@ jobs:
         echo "::set-output name=gems-path::$GEMS_PATH"
         GEMS_HASH=$(shasum -a 256 "$HOMEBREW_REPOSITORY/Library/Homebrew/Gemfile.lock" | cut -f1 -d' ')
         echo "::set-output name=gems-hash::$GEMS_HASH"
+        
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          sudo chown -R "$USER" "$HOMEBREW_PREFIX"
+          sudo chmod -R g-w,o-w "$HOMEBREW_REPOSITORY/Library/Taps"
+        fi
 
         cd "$HOMEBREW_CORE_REPOSITORY"
         rm -rf "$GITHUB_WORKSPACE"
@@ -51,11 +56,6 @@ jobs:
         git fetch origin "${{github.sha}}"
         git checkout --force -B master FETCH_HEAD
         cd -
-
-        if [ "$RUNNER_OS" = "Linux" ]; then
-          sudo chown -R "$USER" "$HOMEBREW_PREFIX"
-          sudo chmod -R g-w,o-w "$HOMEBREW_CORE_REPOSITORY"
-        fi
 
     - name: Set up Ruby
       if: matrix.os == 'ubuntu-latest'
