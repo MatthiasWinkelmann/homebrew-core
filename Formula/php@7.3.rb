@@ -6,6 +6,7 @@ class PhpAT73 < Formula
   mirror "https://fossies.org/linux/www/php-7.3.21.tar.xz"
   sha256 "4c8b065746ef776d84b7ae47908c21a79e3d4704b86b60d816716b8697c58ce9"
   license "PHP-3.01"
+  revision 1
 
   bottle do
     sha256 "f01790fd07586e4f2c70c645d26a3a7b57c94169556eb45a1baf77bbf2a28cfb" => :catalina
@@ -24,7 +25,7 @@ class PhpAT73 < Formula
   depends_on "argon2"
   depends_on "aspell"
   depends_on "autoconf"
-  depends_on "curl-openssl"
+  depends_on "curl"
   depends_on "freetds"
   depends_on "freetype"
   depends_on "gettext"
@@ -132,7 +133,7 @@ class PhpAT73 < Formula
       --enable-zip
       --with-apxs2=#{Formula["httpd"].opt_bin}/apxs
       --with-bz2#{headers_path}
-      --with-curl=#{Formula["curl-openssl"].opt_prefix}
+      --with-curl=#{Formula["curl"].opt_prefix}
       --with-fpm-user=_www
       --with-fpm-group=_www
       --with-freetype-dir=#{Formula["freetype"].opt_prefix}
